@@ -65,17 +65,19 @@ const About = () => {
     {
       title: "Our Mission",
       description:
-        "To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.",
+        "To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.",
     },
     {
       title: "Our Vision",
       description:
-        "To be the global benchmark for luxury experiences that honor ancient traditions.",
+        "To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.To preserve and promote the spiritual heritage of Varanasi through authentic and soulful hospitality.To be the global benchmark for luxury experiences that honor ancient traditions.",
     },
   ];
 
   const storyContent = [
     "Founded in 1995, Dhaneswari Hotel was born from a profound vision of the divine Goddess Dhaneswari. Nestled in the heart of the world's oldest living city, we sought to create a bridge between the timeless spiritual energy of Varanasi and the sophisticated needs of the modern traveler.",
+    "For over 25 years, our journey has been defined by a commitment to authentic hospitality. What began as a modest heritage home has evolved into a premier luxury destination, yet our soul remains rooted in the traditional values of 'Atithi Devo Bhava'—treating every guest as God.",
+     "Founded in 1995, Dhaneswari Hotel was born from a profound vision of the divine Goddess Dhaneswari. Nestled in the heart of the world's oldest living city, we sought to create a bridge between the timeless spiritual energy of Varanasi and the sophisticated needs of the modern traveler.",
     "For over 25 years, our journey has been defined by a commitment to authentic hospitality. What began as a modest heritage home has evolved into a premier luxury destination, yet our soul remains rooted in the traditional values of 'Atithi Devo Bhava'—treating every guest as God.",
   ];
 
@@ -112,10 +114,10 @@ const About = () => {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                 About Dhaneswari Hotel
               </h1>
-              <p className="text-2xl md:text-3xl text-yellow-400 font-light mb-8">
+              <p className="text-2xl md:text-3xl text-white font-light mb-8">
                 Where Ancient Tradition Meets Modern Luxury
               </p>
-              <button className="bg-orange-500 text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-[#0ac2c2] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0">
+              <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-[#0ac2c2] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0">
                 Explore Our Story
               </button>
             </div>
@@ -124,7 +126,7 @@ const About = () => {
 
         {/* Our Story Section */}
         <section className="py-20 px-4">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-gray-800 mb-4">
                 Our Story
@@ -132,7 +134,7 @@ const About = () => {
               <div className="w-24 h-1 bg-yellow-400 mx-auto" />
             </div>
 
-            <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
+            <div className="space-y-6 text-gray-600 text-lg py-9 px-9 font-semibold rounded-xl leading-relaxed">
               {storyContent.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
@@ -141,13 +143,13 @@ const About = () => {
         </section>
 
         {/* Mission & Vision Section */}
-        <section className="py-16 px-4 bg-white">
-          <div className="max-w-6xl mx-auto">
+        <section className="py-16 px-4 ">
+          <div className="max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
               {missionVision.map((item, index) => (
                 <div
                   key={index}
-                  className="bg-[#fcf7ea] p-10 rounded-2xl shadow-lg border-t-4 border-yellow-400 hover:shadow-xl transition-shadow"
+                  className="bg-[#fcf7ea] p-10 rounded-2xl shadow-lg border-t-4 border-yellow-400 hover:shadow-xl transition-shadow bg-white"
                 >
                   <h3 className="text-2xl font-bold text-gray-800 mb-4">
                     {item.title}
@@ -180,8 +182,8 @@ const About = () => {
         </section>
 
         {/* Core Values Section */}
-        <section className="py-20 px-4 bg-white">
-          <div className="max-w-6xl mx-auto">
+        <section className="py-20 px-4 ">
+          <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold text-gray-800 mb-4">
                 Our Core Values
@@ -195,7 +197,7 @@ const About = () => {
               {coreValues.map((value, index) => (
                 <div
                   key={index}
-                  className="bg-[#fcf7ea] p-8 rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1"
+                  className="bg-[#fcf7ea] p-8 rounded-xl shadow-md bg-white hover:shadow-lg transition-all hover:-translate-y-1"
                 >
                   <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
                     {value.title}
