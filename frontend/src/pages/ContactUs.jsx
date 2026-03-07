@@ -102,7 +102,7 @@ const ContactPage = () => {
 
   return (
     <div className="min-h-screen ">
-      <Navbar />
+    
       
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-amber-800 to-amber-900 text-white py-20 px-4 overflow-hidden">
@@ -426,7 +426,7 @@ const ContactPage = () => {
         </div>
       </div>
 
-      <Footer />
+      
     </div>
   );
 };
