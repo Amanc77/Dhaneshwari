@@ -10,12 +10,10 @@ const features = [
 function WhyChoose() {
   return (
     <section className="bg-[#d8d1c4] py-24 text-center">
-      {/* Title */}
       <h2 className="mb-16 text-5xl font-semibold text-gray-800">
         Why Choose us ?
       </h2>
 
-      {/* Cards */}
       <div className="mx-auto flex justify-center gap-8 px-6 flex-wrap">
         {features.map((item, i) => (
           <div
