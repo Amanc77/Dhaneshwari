@@ -74,7 +74,18 @@ function Gallery() {
   const [selectedImage, setSelectedImage] = useState(null);
   const autoPlayRef = useRef();
 
-  const itemsPerView = 4;
+  const [itemsPerView, setItemsPerView] = useState(4);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) setItemsPerView(1);
+      else if (window.innerWidth < 1024) setItemsPerView(2);
+      else setItemsPerView(4);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const extendedImages = [
     ...images.slice(-itemsPerView),
@@ -85,6 +96,10 @@ function Gallery() {
   const totalSlides = images.length;
   const startIndex = itemsPerView;
   const [slideIndex, setSlideIndex] = useState(startIndex);
+
+  useEffect(() => {
+    setSlideIndex(itemsPerView);
+  }, [itemsPerView]);
 
   const handleTransitionEnd = () => {
     setIsTransitioning(false);
@@ -155,10 +170,10 @@ function Gallery() {
 
   return (
     <>
-      <section className="py-16">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+      <section className="py-10 sm:py-12 lg:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="mb-8 sm:mb-10 lg:mb-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
               Our Gallery
             </h2>
           </div>
@@ -207,14 +222,15 @@ function Gallery() {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg hover:bg-orange-500 hover:text-white transition"
+                  className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white shadow-lg hover:bg-orange-500 hover:text-white transition"
+                  aria-label="Previous"
                 >
                   ‹
                 </button>
-
                 <button
                   onClick={nextSlide}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg hover:bg-orange-500 hover:text-white transition"
+                  className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-30 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white shadow-lg hover:bg-orange-500 hover:text-white transition"
+                  aria-label="Next"
                 >
                   ›
                 </button>

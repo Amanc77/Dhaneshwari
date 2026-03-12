@@ -38,7 +38,7 @@ function Attractions() {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) setItemsPerView(1);
-      else if (window.innerWidth < 768) setItemsPerView(2);
+      else if (window.innerWidth < 1024) setItemsPerView(2);
       else setItemsPerView(3);
     };
 
@@ -50,6 +50,10 @@ function Attractions() {
   const totalSlides = attractions.length;
   const startIndex = itemsPerView;
   const [slideIndex, setSlideIndex] = useState(startIndex);
+
+  useEffect(() => {
+    setSlideIndex(itemsPerView);
+  }, [itemsPerView]);
 
   const extendedAttractions = [
     ...attractions.slice(-itemsPerView),
@@ -125,10 +129,10 @@ function Attractions() {
   };
 
   return (
-    <section className="py-0">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+    <section className="py-10 sm:py-12 lg:py-0">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
             Famous Attractions
           </h2>
         </div>
@@ -203,14 +207,16 @@ function Attractions() {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute -left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-4 shadow-xl hover:scale-110 hover:bg-orange-500 hover:text-white opacity-0 group-hover:opacity-100"
+                className="absolute left-2 sm:-left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-2 sm:p-4 shadow-xl hover:scale-110 hover:bg-orange-500 hover:text-white opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                aria-label="Previous"
               >
                 ‹
               </button>
 
               <button
                 onClick={nextSlide}
-                className="absolute -right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-4 shadow-xl hover:scale-110 hover:bg-orange-500 hover:text-white opacity-0 group-hover:opacity-100"
+                className="absolute right-2 sm:-right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white p-2 sm:p-4 shadow-xl hover:scale-110 hover:bg-orange-500 hover:text-white opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                aria-label="Next"
               >
                 ›
               </button>
