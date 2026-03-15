@@ -1,12 +1,14 @@
-import { Hotel, MapPin, Camera, Bell, Clock, Wifi } from "lucide-react";
+import { Hotel, ArrowUp,MapPin, Camera, Bell, Clock,ChefHat, Gauge,Wifi,Compass ,VenetianMask} from "lucide-react";
 
 const features = [
-  { text: "Premium Rooms", icon: <Hotel className="h-8 w-8 text-amber-600" /> },
-  { text: "Prime Location", icon: <MapPin className="h-8 w-8 text-emerald-600" /> },
-  { text: "Free WiFi", icon: <Wifi className="h-8 w-8 text-indigo-600" /> },
-  { text: "Tour & Sightseeing", icon: <Camera className="h-8 w-8 text-purple-600" /> },
-  { text: "Hotel Amenities", icon: <Bell className="h-8 w-8 text-orange-600" /> },
-  { text: "24x7 Reception", icon: <Clock className="h-8 w-8 text-blue-600" /> },
+   { text: "Prime Location", icon: <MapPin className="h-8 w-8 text-emerald-600" /> },
+  { text: "Premium Quality Rooms", icon: <Hotel className="h-8 w-8 text-amber-600" /> },
+ { text: "24x7 Reception", icon: <Clock className="h-8 w-8 text-blue-600" /> },
+  { text: "Lift Facility", icon: <ArrowUp className="h-8 w-8 text-indigo-600" /> },
+ 
+  { text: "Premium Hotel Amenities", icon: <Bell className="h-8 w-8 text-orange-600" /> },
+   {text:"Darshan Assistance",icon:<Compass className="h-8 w-8 text-rose-600"/>},
+    { text: "Tour & Sightseeing", icon: <Camera className="h-8 w-8 text-purple-600" /> },
 ];
 
 function WhyChoose() {
