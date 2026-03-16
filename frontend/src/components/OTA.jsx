@@ -30,7 +30,7 @@ const otaPlatforms = [
 function OTAHighlights() {
   return (
     <section className="w-full px-4 sm:px-6 lg:px-10">
-      <div className="w-full py-12 mb-6 bg-[#e4dcce] rounded-2xl">
+      <div className="w-full py-8 mb-6 rounded-2xl">
         <div className="text-center mb-12 px-4">
           <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4">
          <h2 className="group relative inline-block text-2xl sm:text-3xl font-semibold text-gray-900 font-[Poppins] cursor-pointer">

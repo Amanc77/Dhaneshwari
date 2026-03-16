@@ -49,9 +49,9 @@ function Testimonials() {
   ];
 
   return (
-    <section className="py-10  px-4 sm:px-6 lg:px-10">
+    <section className="  px-4 sm:px-6 lg:px-10">
       {/* FULL WIDTH BACKGROUND CONTAINER */}
-      <div className="w-full bg-[#e4dcce] rounded-3xl px-4 sm:px-6 lg:px-10 py-10">
+      <div className="w-full rounded-3xl px-4 sm:px-6 lg:px-10 py-10">
 
         <div className="text-center mb-14">
           <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4">
