@@ -1,10 +1,11 @@
 import { Link, useParams } from "react-router-dom";
-import { blogPosts } from "../data/siteData";
+import { attractionPosts, blogPosts } from "../data/siteData";
 import NotFound from "./NotFound";
 
 function BlogPost() {
   const { slug } = useParams();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const allPosts = [...blogPosts, ...attractionPosts];
+  const post = allPosts.find((p) => p.slug === slug);
 
   if (!post) return <NotFound />;
 
@@ -16,6 +17,19 @@ function BlogPost() {
       <h1 className="mt-3 text-4xl font-semibold">{post.title}</h1>
       <p className="mt-4 text-gray-600">{post.excerpt}</p>
 
+      {post.image && (
+        <div className="mt-8 overflow-hidden rounded-2xl bg-white shadow-md">
+          <div className="relative h-56 w-full sm:h-72">
+            <img
+              src={post.image}
+              alt={post.title}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="mt-10 space-y-5 rounded-2xl bg-white p-8 shadow-md">
         {post.content.map((para, i) => (
           <p key={i} className="text-gray-700 leading-relaxed">
@@ -26,10 +40,10 @@ function BlogPost() {
 
       <div className="mt-10">
         <Link
-          to="/blog"
+          to="/famous-attractions"
           className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-800 shadow-sm hover:border-gray-400"
         >
-          <span aria-hidden="true">←</span> Back to Blog
+          <span aria-hidden="true">←</span> Back to Famous Attractions
         </Link>
       </div>
     </div>
@@ -37,4 +51,3 @@ function BlogPost() {
 }
 
 export default BlogPost;
-

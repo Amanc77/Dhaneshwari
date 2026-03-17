@@ -11,7 +11,7 @@ const navItems = [
   { name: "Home", path: "/" },
   { name: "Rooms & Amenities", path: "/rooms" },
   { name: "Gallery", path: "/gallery" },
-  { name: "Blog", path: "/blog" },
+  { name: "Famous Attractions", path: "/famous-attractions" },
   { name: "About", path: "/about" },
   { name: "Contact", path: "/contact" },
 ];
