@@ -25,7 +25,10 @@ function App() {
         />
         <Route path="famous-attractions" element={<FamousAttractions />} />
         <Route path="famous-attractions/:slug" element={<BlogPost />} />
-        <Route path="blog" element={<Navigate to="/famous-attractions" replace />} />
+        <Route
+          path="blog"
+          element={<Navigate to="/famous-attractions" replace />}
+        />
         <Route path="blog/:slug" element={<BlogPost />} />
         <Route path="about" element={<AboutUs />} />
         <Route path="contact" element={<ContactUs />} />
