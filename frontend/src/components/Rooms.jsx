@@ -29,6 +29,15 @@ function Rooms() {
   const navigate = useNavigate();
 
   return (
+<<<<<<< fix-ui
+    <section className="w-full px-4 sm:px-6 lg:px-10">
+      <div className="w-full py-10 sm:py-6 lg:py-8  rounded-2xl">
+      <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4">
+         <h2 className="group relative inline-block text-2xl sm:text-3xl font-semibold text-gray-900 font-[Poppins] cursor-pointer">
+ Our Luxury Rooms 
+  <span className=" absolute left-1/2 -translate-x-1/2 -bottom-2 h-1/17 w-12 bg-black transition-all duration-500 group-hover:w-full"></span>
+</h2>
+=======
     <section className="w-full  pt-10 px-4 sm:px-6 lg:px-10">
       <div className="w-full py-10 sm:py-12 lg:py-14 bg-[#e4dcce] rounded-2xl">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4">
@@ -36,6 +45,7 @@ function Rooms() {
             Our Luxury Rooms
             <span className=" absolute left-1/2 -translate-x-1/2 -bottom-2 h-1/17 w-12 bg-black transition-all duration-500 group-hover:w-full"></span>
           </h2>
+>>>>>>> main
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8 px-4 sm:px-6 lg:px-8">

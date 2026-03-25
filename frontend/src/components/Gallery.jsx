@@ -209,6 +209,16 @@ function GalleryCarousel({ label = "Gallery", images }) {
 
   return (
     <>
+<<<<<<< fix-ui
+      <section className="w-full px-4  sm:px-6 lg:px-10">
+        <div className="w-full py-10 sm:py-8 lg:py-10 rounded-2xl">
+          <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4">
+         <h2 className="group relative inline-block text-2xl sm:text-3xl font-semibold text-gray-900 font-[Poppins] cursor-pointer">
+  Our Gallery
+  <span className=" absolute left-1/2 -translate-x-1/2 -bottom-2 h-1/17 w-12 bg-black transition-all duration-500 group-hover:w-full"></span>
+</h2>
+        </div>
+=======
       <div
         className="relative group"
         onMouseEnter={pauseAutoPlay}
@@ -217,6 +227,7 @@ function GalleryCarousel({ label = "Gallery", images }) {
         <div className="relative rounded-3xl overflow-hidden">
           <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20 sm:w-24 bg-gradient-to-r from-[#e7e1d5] to-transparent"></div>
           <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20 sm:w-24 bg-gradient-to-l from-[#e7e1d5] to-transparent"></div>
+>>>>>>> main
 
           <div
             className="flex transition-transform duration-500 ease-out"

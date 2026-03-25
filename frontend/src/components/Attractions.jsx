@@ -169,8 +169,8 @@ function Attractions() {
   };
 
   return (
-    <section className="w-full pt-8 px-4 sm:px-6 lg:px-10">
-      <div className="w-full py-10 sm:py-12 lg:py-14 bg-[#e4dcce] rounded-2xl">
+    <section className="w-full  px-4 sm:px-6 lg:px-10">
+      <div className="w-full py-10 sm:py-6 lg:py-8 rounded-2xl">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4">
           <h2 className="group relative inline-block text-2xl sm:text-3xl font-semibold text-gray-900 font-[Poppins] cursor-pointer">
             Famous Attractions
