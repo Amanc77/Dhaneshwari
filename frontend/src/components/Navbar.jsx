@@ -30,7 +30,6 @@ function Navbar() {
   return (
     <nav className="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-gray-200">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-        {/* Logo */}
         <NavLink
           to="/"
           className="shrink-0 text-lg sm:text-xl font-semibold tracking-wide text-orange-500"
@@ -39,7 +38,6 @@ function Navbar() {
           LOGO
         </NavLink>
 
-        {/* Desktop Nav Links */}
         <ul className="hidden lg:flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
           {navItems.map((item) => (
             <li key={item.name}>
@@ -56,7 +54,6 @@ function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop: auth + booking */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
           {isAuthenticated ? (
             <button
@@ -88,16 +85,15 @@ function Navbar() {
           )}
           <Link
             to="/booking"
-            className="inline-flex rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 hover:shadow-md"
+            className="inline-flex rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
           >
             Booking
           </Link>
         </div>
 
-        {/* Mobile menu button */}
         <button
           type="button"
-          className="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-orange-500 transition"
+          className="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-orange-500 transition focus:outline-none focus:ring-2 focus:ring-orange-500"
           onClick={() => setMenuOpen((o) => !o)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
         >
@@ -105,7 +101,6 @@ function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu panel */}
       <div
         className={`lg:hidden overflow-hidden transition-all duration-300 ease-out ${
           menuOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
@@ -130,7 +125,7 @@ function Navbar() {
             {isAuthenticated ? (
               <button
                 type="button"
-                className="block w-full text-left py-3 px-3 rounded-md text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-orange-600"
+                className="block w-full text-left py-3 px-3 rounded-md text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 onClick={() => {
                   signOut();
                   setMenuOpen(false);
@@ -164,7 +159,7 @@ function Navbar() {
           <li className="pt-2">
             <Link
               to="/booking"
-              className="block w-full rounded-md bg-orange-500 px-5 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-orange-600"
+              className="block w-full rounded-md bg-orange-500 px-5 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               onClick={() => setMenuOpen(false)}
             >
               Booking
