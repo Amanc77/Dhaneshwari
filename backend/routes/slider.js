@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Slider = require('../models/Slider');
+const auth = require('../middleware/auth');
 
+// Get all slides (public)
 router.get('/', async (req, res) => {
   try {
     const slides = await Slider.find();
@@ -11,7 +13,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+// Create slide (admin only)
+router.post('/', auth, async (req, res) => {
   try {
     const slide = new Slider(req.body);
     await slide.save();
@@ -21,7 +24,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// Delete slide (admin only)
+router.delete('/:id', auth, async (req, res) => {
   try {
     await Slider.findByIdAndDelete(req.params.id);
     res.json({ message: 'Slide deleted' });

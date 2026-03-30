@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const passport = require('passport');
+require('../config/passport');
 
 // Sign Up
 router.post('/signup', async (req, res) => {
@@ -85,6 +87,15 @@ router.post('/reset-password/:token', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Google OAuth - initiate
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Google OAuth - callback
+router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
+  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  res.redirect(`http://localhost:3000/auth/google/success?token=${token}`);
 });
 
 module.exports = router;

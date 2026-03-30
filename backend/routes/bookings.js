@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
+const auth = require('../middleware/auth');
 
-// Check room availability
+// Check room availability (public)
 router.post('/check-availability', async (req, res) => {
   try {
     const { roomId, checkIn, checkOut } = req.body;
@@ -20,7 +21,7 @@ router.post('/check-availability', async (req, res) => {
   }
 });
 
-// Create booking with inventory check
+// Create booking (public)
 router.post('/', async (req, res) => {
   try {
     const room = await Room.findById(req.body.room);
@@ -44,8 +45,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all bookings (admin)
-router.get('/', async (req, res) => {
+// Get all bookings (admin only)
+router.get('/', auth, async (req, res) => {
   try {
     const { status, guest, checkIn, checkOut } = req.query;
     const filter = {};
@@ -57,6 +58,32 @@ router.get('/', async (req, res) => {
 
     const bookings = await Booking.find(filter).populate('room');
     res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update booking status (admin only)
+router.patch('/:id/status', auth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    ).populate('room');
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+    res.json(booking);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete booking (admin only)
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    await Booking.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Booking deleted' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Room = require('../models/Room');
+const auth = require('../middleware/auth');
 
-// Get all rooms
+// Get all rooms (public)
 router.get('/', async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single room
+// Get single room (public)
 router.get('/:id', async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
@@ -23,8 +24,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create room (admin)
-router.post('/', async (req, res) => {
+// Create room (admin only)
+router.post('/', auth, async (req, res) => {
   try {
     const room = new Room(req.body);
     await room.save();
@@ -34,8 +35,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update room (admin)
-router.put('/:id', async (req, res) => {
+// Update room (admin only)
+router.put('/:id', auth, async (req, res) => {
   try {
     const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(room);
@@ -44,8 +45,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete room (admin)
-router.delete('/:id', async (req, res) => {
+// Delete room (admin only)
+router.delete('/:id', auth, async (req, res) => {
   try {
     await Room.findByIdAndDelete(req.params.id);
     res.json({ message: 'Room deleted' });
@@ -54,7 +55,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Calculate price with full breakdown
+// Calculate price with full breakdown (public)
 router.post('/:id/calculate-price', async (req, res) => {
   try {
     const { checkIn, checkOut, adults, discountPercent } = req.body;
