@@ -3,7 +3,7 @@ const router = express.Router();
 const Room = require('../models/Room');
 const auth = require('../middleware/auth');
 
-// Get all rooms (public)
+// ─── Public: Get all rooms ────────────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single room (public)
+// ─── Public: Get single room ──────────────────────────────────────────────────
 router.get('/:id', async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create room (admin only)
+// ─── Admin: Create room ───────────────────────────────────────────────────────
 router.post('/', auth, async (req, res) => {
   try {
     const room = new Room(req.body);
@@ -35,7 +35,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Update room (admin only)
+// ─── Admin: Update room ───────────────────────────────────────────────────────
 router.put('/:id', auth, async (req, res) => {
   try {
     const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -45,7 +45,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-// Delete room (admin only)
+// ─── Admin: Delete room ───────────────────────────────────────────────────────
 router.delete('/:id', auth, async (req, res) => {
   try {
     await Room.findByIdAndDelete(req.params.id);
@@ -55,7 +55,7 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// Calculate price with full breakdown (public)
+// ─── Public: Price calculator with full breakdown + GST (task 16 updated) ────
 router.post('/:id/calculate-price', async (req, res) => {
   try {
     const { checkIn, checkOut, adults, discountPercent } = req.body;
@@ -66,7 +66,7 @@ router.post('/:id/calculate-price', async (req, res) => {
     const end = new Date(checkOut);
     const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
 
-    // Date-wise pricing check
+    // Date-wise pricing override
     const dateOverride = room.datePricing.find(dp =>
       start >= new Date(dp.startDate) && end <= new Date(dp.endDate)
     );
@@ -79,12 +79,12 @@ router.post('/:id/calculate-price', async (req, res) => {
       return res.status(400).json({ error: `Max occupancy is ${room.maxOccupancy} adults` });
     }
 
-    // Breakdown
+    // Full breakdown
     const basePriceTotal = basePricePerNight * nights;
     const extraAdultTotal = extraAdults * room.extraAdultPrice * nights;
     const subtotal = basePriceTotal + extraAdultTotal;
 
-    // Discount
+    // Optional discount
     const discount = discountPercent ? Math.round((discountPercent / 100) * subtotal) : 0;
     const afterDiscount = subtotal - discount;
 

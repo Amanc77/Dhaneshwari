@@ -3,7 +3,7 @@ const router = express.Router();
 const Promotion = require('../models/Promotion');
 const auth = require('../middleware/auth');
 
-// Get all promotions (public)
+// ─── Public: Get all promotions ───────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
     const promotions = await Promotion.find().populate('rooms');
@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Apply promotion (public - used during booking)
+// ─── Public: Apply promotion (used during booking flow) ──────────────────────
 router.post('/apply', async (req, res) => {
   try {
     const { roomId, date, amount } = req.body;
@@ -45,7 +45,7 @@ router.post('/apply', async (req, res) => {
   }
 });
 
-// Create promotion (admin only)
+// ─── Admin: Create promotion ──────────────────────────────────────────────────
 router.post('/', auth, async (req, res) => {
   try {
     const promotion = await Promotion.create(req.body);
@@ -55,7 +55,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Update promotion (admin only)
+// ─── Admin: Update promotion ──────────────────────────────────────────────────
 router.put('/:id', auth, async (req, res) => {
   try {
     const promotion = await Promotion.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -65,7 +65,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-// Toggle promotion active/inactive (admin only)
+// ─── Admin: Toggle promotion active/inactive ──────────────────────────────────
 router.patch('/:id/toggle', auth, async (req, res) => {
   try {
     const promotion = await Promotion.findById(req.params.id);
@@ -78,7 +78,7 @@ router.patch('/:id/toggle', auth, async (req, res) => {
   }
 });
 
-// Delete promotion (admin only)
+// ─── Admin: Delete promotion ──────────────────────────────────────────────────
 router.delete('/:id', auth, async (req, res) => {
   try {
     await Promotion.findByIdAndDelete(req.params.id);

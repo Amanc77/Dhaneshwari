@@ -4,7 +4,7 @@ const Testimonial = require('../models/Testimonial');
 const upload = require('../middleware/upload');
 const auth = require('../middleware/auth');
 
-// Get all testimonials (public)
+// ─── Public: Get all testimonials ─────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
     const testimonials = await Testimonial.find();
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create testimonial (admin only)
+// ─── Admin: Create testimonial ────────────────────────────────────────────────
 router.post('/', auth, async (req, res) => {
   try {
     const testimonial = new Testimonial(req.body);
@@ -25,13 +25,13 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Upload photo (admin only)
+// ─── Admin: Upload guest photo ────────────────────────────────────────────────
 router.post('/upload-photo', auth, upload.single('photo'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   res.json({ photoUrl: `/uploads/${req.file.filename}` });
 });
 
-// Update testimonial (admin only)
+// ─── Admin: Update testimonial ────────────────────────────────────────────────
 router.put('/:id', auth, async (req, res) => {
   try {
     const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -41,7 +41,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-// Delete testimonial (admin only)
+// ─── Admin: Delete testimonial ────────────────────────────────────────────────
 router.delete('/:id', auth, async (req, res) => {
   try {
     await Testimonial.findByIdAndDelete(req.params.id);

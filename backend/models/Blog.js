@@ -16,6 +16,9 @@ const blogSchema = new mongoose.Schema({
   h2: String,
   h3: String,
   isPublished: { type: Boolean, default: false },
+  // task 10: multi-select categories (checkboxes on admin panel)
+  // e.g. ["Places you can't forget", "Local Tips", "Travel Guide"]
+  categories: [{ type: String }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Blog', blogSchema);

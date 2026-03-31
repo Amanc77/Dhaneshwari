@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Amenity = require('../models/Amenity');
+const auth = require('../middleware/auth');
 
+// ─── Public: Get all amenities ────────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
     const amenities = await Amenity.find();
@@ -11,7 +13,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+// ─── Admin: Create amenity ────────────────────────────────────────────────────
+router.post('/', auth, async (req, res) => {
   try {
     const amenity = await Amenity.create(req.body);
     res.status(201).json(amenity);
@@ -21,7 +24,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+// ─── Admin: Update amenity ────────────────────────────────────────────────────
+router.put('/:id', auth, async (req, res) => {
   try {
     const amenity = await Amenity.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(amenity);
@@ -30,7 +34,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+// ─── Admin: Delete amenity ────────────────────────────────────────────────────
+router.delete('/:id', auth, async (req, res) => {
   try {
     await Amenity.findByIdAndDelete(req.params.id);
     res.json({ message: 'Amenity deleted' });
