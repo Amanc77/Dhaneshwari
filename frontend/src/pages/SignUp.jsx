@@ -11,9 +11,11 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
@@ -23,9 +25,11 @@ function SignUp() {
       setError("Passwords do not match.");
       return;
     }
-    const result = signUp(name, email, password, phone);
+    setLoading(true);
+    const result = await signUp(name, email, password, phone);
     if (!result.ok) {
       setError(result.error);
+      setLoading(false);
       return;
     }
     navigate("/profile", { replace: true });
@@ -57,6 +61,7 @@ function SignUp() {
               type="text"
               autoComplete="name"
               required
+              disabled={loading}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -74,6 +79,7 @@ function SignUp() {
               type="email"
               autoComplete="email"
               required
+              disabled={loading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -90,6 +96,7 @@ function SignUp() {
               id="signup-phone"
               type="tel"
               autoComplete="tel"
+              disabled={loading}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -107,6 +114,7 @@ function SignUp() {
               type="password"
               autoComplete="new-password"
               required
+              disabled={loading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -124,6 +132,7 @@ function SignUp() {
               type="password"
               autoComplete="new-password"
               required
+              disabled={loading}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -131,9 +140,10 @@ function SignUp() {
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full rounded-md bg-orange-500 py-3 text-sm font-semibold text-white shadow hover:bg-orange-600"
           >
-            Sign up
+            {loading ? "Signing up..." : "Sign up"}
           </button>
         </form>
 

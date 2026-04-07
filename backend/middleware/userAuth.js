@@ -8,6 +8,10 @@ const userAuth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
     if (!user) return res.status(401).json({ error: 'User not found' });
+    if (!['user', 'admin'].includes(user.role)) {
+      return res.status(403).json({ error: 'Forbidden: invalid role' });
+    }
+    req.auth = { id: user.id, role: user.role, email: user.email };
     req.user = user;
     next();
   } catch (err) {

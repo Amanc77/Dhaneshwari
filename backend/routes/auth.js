@@ -36,12 +36,16 @@ router.post('/signup',
   validate,
   async (req, res) => {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, role } = req.body;
       const existing = await User.findOne({ email });
       if (existing) return res.status(400).json({ error: 'Email already registered' });
+      const requestedRole = role || 'user';
+      if (requestedRole === 'admin') {
+        return res.status(403).json({ error: 'Admin account cannot be self-registered' });
+      }
       const hash = await bcrypt.hash(password, 10);
-      await User.create({ name, email, password: hash });
-      res.status(201).json({ message: 'User registered successfully' });
+      await User.create({ name, email, password: hash, role: 'user' });
+      res.status(201).json({ message: 'User registered successfully', role: 'user' });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -64,11 +68,20 @@ router.post('/login',
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
       const token = jwt.sign(
-        { id: user._id, email: user.email, name: user.name },
+        { id: user._id, email: user.email, name: user.name, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: '7d' }
       );
-      res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+      res.json({
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone || '',
+          role: user.role || 'user'
+        }
+      });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -176,7 +189,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
   const token = jwt.sign(
-    { id: req.user._id, email: req.user.email, name: req.user.name },
+    { id: req.user._id, email: req.user.email, name: req.user.name, role: req.user.role || 'user' },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );

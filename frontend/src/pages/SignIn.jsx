@@ -9,18 +9,24 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const from = location.state?.from?.pathname || "/profile";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setError("");
-    const result = signIn(email, password);
+    setLoading(true);
+    const result = await signIn(email, password);
     if (!result.ok) {
       setError(result.error);
+      setLoading(false);
       return;
     }
-    navigate(from, { replace: true });
+    const role = result.user?.role || "user";
+    const nextPath = role === "admin" ? "/admin/dashboard" : from;
+    navigate(nextPath, { replace: true });
   };
 
   return (
@@ -49,6 +55,7 @@ function SignIn() {
               type="email"
               autoComplete="email"
               required
+              disabled={loading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -66,6 +73,7 @@ function SignIn() {
               type="password"
               autoComplete="current-password"
               required
+              disabled={loading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -73,9 +81,10 @@ function SignIn() {
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full rounded-md bg-orange-500 py-3 text-sm font-semibold text-white shadow hover:bg-orange-600"
           >
-            Sign in
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 

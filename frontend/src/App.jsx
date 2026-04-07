@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -42,10 +43,24 @@ function App() {
         <Route path="about" element={<AboutUs />} />
         <Route path="contact" element={<ContactUs />} />
         <Route path="reservation" element={<Reservation />} />
-        <Route path="my-reservations" element={<UserReservationPage />} />
+        <Route
+          path="my-reservations"
+          element={
+            <ProtectedRoute roles={["user", "admin"]}>
+              <UserReservationPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="testimonials" element={<Testimonials />} />
         <Route path="ota-platforms" element={<OTASection />} />
-        <Route path="profile" element={<Profile />} />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute roles={["user", "admin"]}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="sign-in" element={<SignIn />} />
         <Route path="sign-up" element={<SignUp />} />
         <Route path="booking" element={<Booking />} />

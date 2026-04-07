@@ -27,7 +27,7 @@ const navItems = [
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isAuthenticated, signOut } = useAuth();
+  const { isAuthenticated, user, signOut } = useAuth();
 
   return (
     <nav className="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-gray-200">
@@ -58,13 +58,18 @@ function Navbar() {
 
         <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0">
           {isAuthenticated ? (
-            <button
-              type="button"
-              onClick={() => signOut()}
-              className="text-xs xl:text-sm font-semibold text-gray-600 hover:text-orange-600 whitespace-nowrap"
-            >
-              Sign out
-            </button>
+            <>
+              <span className="text-xs xl:text-sm font-semibold text-gray-600 whitespace-nowrap">
+                {user?.name || "User"}
+              </span>
+              <button
+                type="button"
+                onClick={() => signOut()}
+                className="text-xs xl:text-sm font-semibold text-gray-600 hover:text-orange-600 whitespace-nowrap"
+              >
+                Sign out
+              </button>
+            </>
           ) : (
             <>
               <NavLink
