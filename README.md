@@ -1,51 +1,143 @@
-# Dhaneshwari – Luxury  Stay Website
+# Dhaneshwari
 
-A modern and elegant landing page for **Dhaneshwari Stay**.  
+Full-stack hotel website with separate frontend and backend apps.
 
-The website highlights rooms, amenities, guest experiences, nearby attractions, and a beautiful photo gallery to give visitors a complete overview of the stay.
+## Project structure
 
-Built with modern frontend tools to ensure fast performance and a smooth user experience.
+- `frontend` - React + Vite application
+- `backend` - Node.js + Express + MongoDB API
 
----
+## Tech stack
 
-## Live Demo https://dhaneshwari-alpha.vercel.app/
----
+- Frontend: React, Vite, Redux Toolkit, React Router, Tailwind CSS, Axios
+- Backend: Node.js, Express, MongoDB (Mongoose), JWT Auth, Passport, Nodemailer
 
-## Tech Stack
+## Prerequisites
 
-- React
-- Vite
-- Tailwind CSS
+- Node.js 18+ (recommended LTS)
+- npm
+- MongoDB database (local or Atlas)
 
----
+## Backend setup
 
-## Features
-
-- Modern and elegant landing page design  
-- Fully responsive layout for all devices  
-- Reusable React components  
-- Photo gallery and room showcase  
-- Guest testimonials section  
-- Nearby attractions section  
-- Clean and modular project structure  
-
----
-
-## Getting Started
-
-Follow these steps to run the project locally.
+### 1) Install dependencies
 
 ```bash
-# Clone repository
-git clone https://github.com/AmanC77/Dhaneshwari.git
-
-# Go to frontend folder
-cd Dhaneshwari/frontend
-
-# Install dependencies
+cd backend
 npm install
+```
 
-# Start development server
+### 2) Create backend environment file
+
+Create `backend/.env`:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_strong_jwt_secret
+
+FRONTEND_URL=http://localhost:5173
+
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_app_password
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+```
+
+Notes:
+- `MONGO_URI` and `JWT_SECRET` are required.
+- Email and Google variables are required only if you use those features.
+
+### 3) Seed initial data (recommended)
+
+```bash
+npm run seed
+```
+
+### 4) Run backend
+
+```bash
 npm run dev
+```
 
-#Open: http://localhost:5173
+Backend URL: `http://localhost:5000`
+
+## Frontend setup
+
+### 1) Install dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+### 2) Create frontend environment file
+
+Create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+### 3) Run frontend
+
+```bash
+npm run dev
+```
+
+Frontend URL: `http://localhost:5173`
+
+## Run both apps together
+
+Use two terminals.
+
+Terminal 1:
+```bash
+cd backend
+npm run dev
+```
+
+Terminal 2:
+```bash
+cd frontend
+npm run dev
+```
+
+## Available scripts
+
+### Backend
+
+- `npm run dev` - start backend with nodemon
+- `npm run seed` - seed database content
+
+### Frontend
+
+- `npm run dev` - start Vite dev server
+- `npm run build` - production build
+- `npm run preview` - preview production build
+- `npm run lint` - run ESLint
+
+## Main API routes
+
+- `/api/auth`
+- `/api/admin`
+- `/api/rooms`
+- `/api/bookings`
+- `/api/attractions`
+- `/api/blogs`
+- `/api/gallery`
+- `/api/testimonials`
+- `/api/amenities`
+- `/api/promotions`
+- `/api/contact`
+- `/api/faqs`
+- `/api/slider`
+
+## Troubleshooting
+
+- If API data does not show in UI, check backend is running and `VITE_API_BASE_URL` is correct.
+- If DB collections are empty, run:
+  - `cd backend && npm run seed`
+- If CORS issues occur, ensure `FRONTEND_URL` in backend `.env` is correct.
+- If auth fails, verify `JWT_SECRET` and token storage in browser localStorage.
