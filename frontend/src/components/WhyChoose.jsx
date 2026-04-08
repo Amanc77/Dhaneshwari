@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import api from "../api/axios";
 import {
   Hotel,
   ArrowUp,
@@ -49,6 +51,26 @@ const features = [
 ];
 
 function WhyChoose() {
+  const [featuresData, setFeaturesData] = useState(features);
+
+  useEffect(() => {
+    api
+      .get("/amenities")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const iconPool = features.map((f) => f.icon);
+        const mapped = data.map((item, idx) => ({
+          text: item.name,
+          icon: iconPool[idx % iconPool.length],
+          description: item.icon || "Premium hospitality feature",
+        }));
+        setFeaturesData(mapped);
+      })
+      .catch(() => {
+        // Keep fallback features on API failure
+      });
+  }, []);
+
   useEffect(() => {
     const script = document.createElement("script");
     script.type = "application/ld+json";
@@ -57,7 +79,7 @@ function WhyChoose() {
       "@type": "Hotel",
       "name": "Dhaneshwari Hotel",
       "description": "Luxury hotel offering prime location, premium rooms, 24x7 reception, and exceptional amenities",
-      "amenityFeature": features.map(feature => ({
+      "amenityFeature": featuresData.map(feature => ({
         "@type": "LocationFeatureSpecification",
         "name": feature.text,
         "description": feature.description
@@ -96,7 +118,7 @@ function WhyChoose() {
           </div>
 
           <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 pt-4 lg:grid-cols-7 gap-7 px-2">
-            {features.map((item, i) => (
+            {featuresData.map((item, i) => (
               <div
                 key={i}
                 className="group relative min-h-[140px] overflow-hidden rounded-2xl bg-white p-5 shadow-md transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center justify-center text-center"

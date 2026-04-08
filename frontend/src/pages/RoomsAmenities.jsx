@@ -1,7 +1,45 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { rooms } from "../data/siteData";
+import api from "../api/axios";
 
 function RoomsAmenities() {
+  const [roomsData, setRoomsData] = useState(rooms);
+  const [amenitiesData, setAmenitiesData] = useState([
+    "24/7 Front Desk Support",
+    "Daily Housekeeping",
+    "Airport / Station Transfer (On request)",
+    "Local Assistance & Recommendations",
+    "Family-friendly Spaces",
+    "Secure & Peaceful Location",
+  ]);
+
+  useEffect(() => {
+    api
+      .get("/rooms")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const mapped = data.map((room, idx) => ({
+          id: room._id || rooms[idx]?.id || `room-${idx + 1}`,
+          title: room.roomType,
+          desc: room.shortDescription || rooms[idx]?.desc || "Comfortable stay",
+          img: room.images?.[0] || rooms[idx]?.img,
+          priceFrom: `₹${room.pricePerNight?.toLocaleString("en-IN") || "0"}`,
+          amenities: room.amenities || [],
+        }));
+        setRoomsData(mapped);
+      })
+      .catch(() => {});
+
+    api
+      .get("/amenities")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        setAmenitiesData(data.map((item) => item.name));
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
       <header className="mb-10">
@@ -13,7 +51,7 @@ function RoomsAmenities() {
       </header>
 
       <section className="grid gap-8 md:grid-cols-3">
-        {rooms.map((room) => (
+        {roomsData.map((room) => (
           <article
             key={room.id}
             className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-md"
@@ -62,14 +100,7 @@ function RoomsAmenities() {
       <section className="mt-14 rounded-2xl bg-white p-8 shadow-md">
         <h2 className="text-2xl font-semibold">Amenities you can count on</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            "24/7 Front Desk Support",
-            "Daily Housekeeping",
-            "Airport / Station Transfer (On request)",
-            "Local Assistance & Recommendations",
-            "Family-friendly Spaces",
-            "Secure & Peaceful Location",
-          ].map((item) => (
+          {amenitiesData.map((item) => (
             <div
               key={item}
               className="rounded-xl border border-gray-200 bg-[#f9f6f0] px-4 py-3 text-sm text-gray-700"

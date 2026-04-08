@@ -1,15 +1,40 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import hero from "../assets/Dhaneshwari Photoshoot/room77.jpeg";
+import api from "../api/axios";
 
 function Hero() {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [heroContent, setHeroContent] = useState({
+    title: "Welcome to Dhaneshwari",
+    image: hero,
+    buttonText: "Book Now",
+    buttonLink: "/booking",
+  });
+
+  useEffect(() => {
+    api
+      .get("/slider")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const active = data.find((slide) => slide.isActive !== false) || data[0];
+        setHeroContent({
+          title: active.title || "Welcome to Dhaneshwari",
+          image: active.imageUrl || hero,
+          buttonText: active.buttonText || "Book Now",
+          buttonLink: active.buttonLink || "/booking",
+        });
+      })
+      .catch(() => {
+        // Keep fallback hero data when API fails
+      });
+  }, []);
 
   useEffect(() => {
     const img = new Image();
-    img.src = hero;
+    img.src = heroContent.image;
     img.onload = () => setImageLoaded(true);
-  }, []);
+  }, [heroContent.image]);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -19,7 +44,7 @@ function Hero() {
       "@type": "Hotel",
       "name": "Dhaneshwari Hotel",
       "description": "Luxury hotel in Varanasi offering premium accommodations and world-class hospitality",
-      "image": hero,
+      "image": heroContent.image,
       "priceRange": "₹₹₹",
       "address": {
         "@type": "PostalAddress",
@@ -57,7 +82,7 @@ function Hero() {
         )}
         
         <img
-          src={hero}
+          src={heroContent.image}
           alt="Dhaneshwari Hotel - Luxury accommodation in Varanasi with premium amenities and world-class hospitality"
           className={`h-full w-full object-cover scale-105 blur-[2px] brightness-75 transition-opacity duration-500 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -70,15 +95,15 @@ function Hero() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/35 text-white px-4 lg:px-0">
           <h1 className="mb-4 sm:mb-6 lg:mb-8 text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-wide drop-shadow-lg">
-            Welcome to Dhaneshwari
+            {heroContent.title}
           </h1>
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6">
             <Link
-              to="/booking"
+              to={heroContent.buttonLink}
               className="rounded-full bg-orange-600 px-6 py-3 sm:px-8 sm:py-3.5 lg:px-10 lg:py-4 text-center text-sm sm:text-base font-semibold text-white shadow-lg transition hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
             >
-              Book Now
+              {heroContent.buttonText}
             </Link>
             <button 
               className="rounded-full border border-white/70 px-6 py-3 sm:px-8 sm:py-3.5 lg:px-10 lg:py-4 text-sm sm:text-base font-semibold text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"

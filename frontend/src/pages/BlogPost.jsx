@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { attractionPosts, blogPosts } from "../data/siteData";
+import api from "../api/axios";
 import NotFound from "./NotFound";
 import { Helmet } from "react-helmet-async";
 import { getImageAlt, getSeoFileName } from "../utils/imageSeo";
@@ -7,9 +9,42 @@ import { getImageAlt, getSeoFileName } from "../utils/imageSeo";
 function BlogPost() {
   const { slug } = useParams();
   const allPosts = [...blogPosts, ...attractionPosts];
-  const post = allPosts.find((p) => p.slug === slug);
+  const fallbackPost = allPosts.find((p) => p.slug === slug);
+  const [post, setPost] = useState(fallbackPost || null);
+  const [loading, setLoading] = useState(true);
 
-  if (!post) return <NotFound />;
+  useEffect(() => {
+    let mounted = true;
+    api
+      .get(`/blogs/${slug}`)
+      .then(({ data }) => {
+        if (!mounted || !data) return;
+        setPost({
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.metaDescription || "",
+          date: data.createdAt
+            ? new Date(data.createdAt).toLocaleDateString("en-IN")
+            : "",
+          image: data.image || fallbackPost?.image,
+          content: (data.content || "")
+            .split("\n")
+            .map((item) => item.trim())
+            .filter(Boolean),
+        });
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [slug]);
+
+  if (!loading && !post) return <NotFound />;
+  if (!post) return null;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14">

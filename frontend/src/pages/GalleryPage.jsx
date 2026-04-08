@@ -1,10 +1,32 @@
+import { useEffect, useState } from "react";
 import { GalleryCarousel } from "../components/Gallery";
+import api from "../api/axios";
 import {
   galleryNearbyImages,
   galleryRoomsImages,
 } from "../data/galleryImages.js";
 
 function GalleryPage() {
+  const [roomsImages, setRoomsImages] = useState(galleryRoomsImages);
+  const [nearbyImages, setNearbyImages] = useState(galleryNearbyImages);
+
+  useEffect(() => {
+    api
+      .get("/gallery")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const roomSection = data.find((s) => s.name?.toLowerCase().includes("room"));
+        const nearbySection = data.find((s) => s.name?.toLowerCase().includes("nearby"));
+        const roomUrls = roomSection?.items?.map((it) => it.url).filter(Boolean);
+        const nearbyUrls = nearbySection?.items?.map((it) => it.url).filter(Boolean);
+        if (roomUrls?.length) setRoomsImages(roomUrls);
+        if (nearbyUrls?.length) setNearbyImages(nearbyUrls);
+      })
+      .catch(() => {
+        // Keep fallback images if API fails
+      });
+  }, []);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
       <header className="mb-10">
@@ -29,7 +51,7 @@ function GalleryPage() {
           </div>
 
           <div className="rounded-2xl bg-[#e9e2d3] p-4 sm:p-6 shadow-sm">
-            <GalleryCarousel label="Our Rooms" images={galleryRoomsImages} />
+            <GalleryCarousel label="Our Rooms" images={roomsImages} />
           </div>
         </section>
 
@@ -46,7 +68,7 @@ function GalleryPage() {
           <div className="rounded-2xl bg-[#e9e2d3] p-4 sm:p-6 shadow-sm">
             <GalleryCarousel
               label="Nearby Places"
-              images={galleryNearbyImages}
+              images={nearbyImages}
             />
           </div>
         </section>

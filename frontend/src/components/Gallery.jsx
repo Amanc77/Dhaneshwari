@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import api from "../api/axios";
 import {
   galleryNearbyImages,
   galleryRoomsImages,
 } from "../data/galleryImages.js";
 import { getImageAlt, getSeoFileName } from "../utils/imageSeo";
 
-const images = [...galleryRoomsImages, ...galleryNearbyImages];
+const fallbackImages = [...galleryRoomsImages, ...galleryNearbyImages];
 
 // Enhanced Lightbox with keyboard navigation and image counter
 function Lightbox({ selectedImage, setSelectedImage, images }) {
@@ -356,11 +357,31 @@ export function GalleryCarousel({ label = "Gallery", images }) {
 }
 
 function Gallery() {
-  
+  const [roomsImages, setRoomsImages] = useState(galleryRoomsImages);
+  const [nearbyImages, setNearbyImages] = useState(galleryNearbyImages);
+  const images = [...roomsImages, ...nearbyImages];
+
+  useEffect(() => {
+    api
+      .get("/gallery")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const roomSection = data.find((s) => s.name?.toLowerCase().includes("room"));
+        const nearbySection = data.find((s) => s.name?.toLowerCase().includes("nearby"));
+        const roomUrls = roomSection?.items?.map((it) => it.url).filter(Boolean);
+        const nearbyUrls = nearbySection?.items?.map((it) => it.url).filter(Boolean);
+        if (roomUrls?.length) setRoomsImages(roomUrls);
+        if (nearbyUrls?.length) setNearbyImages(nearbyUrls);
+      })
+      .catch(() => {
+        // Keep fallback gallery images when API fails
+      });
+  }, []);
+
   const stats = {
     total: images.length,
-    rooms: galleryRoomsImages.length,
-    nearby: galleryNearbyImages.length,
+    rooms: roomsImages.length,
+    nearby: nearbyImages.length,
   };
 
   const gallerySchema = {
@@ -370,7 +391,7 @@ function Gallery() {
     "description": "Explore the beautiful gallery of Dhaneshwari Hotel featuring luxurious rooms, premium amenities, and nearby attractions in Varanasi.",
     "url": typeof window !== "undefined" ? window.location.href : "",
     "numberOfItems": stats.total,
-    "image": images.slice(0, 10).map(img => ({
+      "image": (images.length ? images : fallbackImages).slice(0, 10).map(img => ({
       "@type": "ImageObject",
       "contentUrl": img,
       "name": "Dhaneshwari Hotel Gallery Image",

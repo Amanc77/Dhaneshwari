@@ -1,14 +1,45 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { rooms } from "../data/siteData";
+import api from "../api/axios";
 import NotFound from "./NotFound";
 import { buildQuickPaymentState, parseRupeePrice } from "../utils/quickPaymentState";
 
 function RoomDetail() {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const room = rooms.find((r) => r.id === roomId);
+  const [room, setRoom] = useState(() => rooms.find((r) => r.id === roomId) || null);
+  const [loading, setLoading] = useState(true);
 
-  if (!room) return <NotFound />;
+  useEffect(() => {
+    let mounted = true;
+    api
+      .get("/rooms")
+      .then(({ data }) => {
+        if (!mounted || !Array.isArray(data)) return;
+        const found = data.find((r) => r._id === roomId);
+        if (!found) return;
+        setRoom({
+          id: found._id,
+          title: found.roomType,
+          desc: found.shortDescription || "Comfortable premium stay.",
+          img: found.images?.[0] || rooms[0]?.img,
+          priceFrom: `₹${found.pricePerNight?.toLocaleString("en-IN") || "0"}`,
+          amenities: found.amenities || [],
+        });
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [roomId]);
+
+  if (!loading && !room) return <NotFound />;
+  if (!room) return null;
 
   const pricePerNight = parseRupeePrice(room.priceFrom);
 

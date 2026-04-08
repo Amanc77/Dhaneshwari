@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import api from "../api/axios";
 import image1 from "../assets/Dhaneshwari Photoshoot/Kashi-Vishwanath.webp";
 import image2 from "../assets/Dhaneshwari Photoshoot/kalBharavTemple.webp";
 import image3 from "../assets/Dhaneshwari Photoshoot/eveningArati.webp";
@@ -109,6 +111,49 @@ function Section({ title, subtitle, items }) {
 }
 
 function Blog() {
+  const [blogsData, setBlogsData] = useState([]);
+
+  useEffect(() => {
+    api
+      .get("/blogs")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        setBlogsData(data.filter((b) => b.isPublished !== false));
+      })
+      .catch(() => {
+        // Keep fallback static cards
+      });
+  }, []);
+
+  const { places, experiences, food } = useMemo(() => {
+    if (!blogsData.length) {
+      return {
+        places: placesBlogs,
+        experiences: experiencesBlogs,
+        food: foodBlogs,
+      };
+    }
+
+    const toCard = (b, fallbackImage) => ({
+      id: b.slug,
+      title: b.title,
+      description: b.metaDescription || b.content?.slice(0, 120) || "",
+      image: b.image || fallbackImage,
+    });
+
+    return {
+      places: blogsData
+        .filter((b) => b.categories?.includes("Places you cannot forget"))
+        .map((b) => toCard(b, image1)),
+      experiences: blogsData
+        .filter((b) => b.categories?.includes("Experiences you cannot miss"))
+        .map((b) => toCard(b, image3)),
+      food: blogsData
+        .filter((b) => b.categories?.includes("Food you cannot forget to taste"))
+        .map((b) => toCard(b, image5)),
+    };
+  }, [blogsData]);
+
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-12 lg:py-16">
       <Helmet>
@@ -142,19 +187,19 @@ function Blog() {
       <Section
         title="Places You Can't Forget"
         subtitle="Landmarks and neighbourhoods that stay with you long after you leave Kashi."
-        items={placesBlogs}
+        items={places}
       />
 
       <Section
         title="Experiences You Can't Miss"
         subtitle="Evening rituals, quiet walks, and simple plans to enjoy the city at your own pace."
-        items={experiencesBlogs}
+        items={experiences}
       />
 
       <Section
         title="Food You Can't Forget to Taste"
         subtitle="Comfort food, sweet treats, and relaxed café corners around the ghats."
-        items={foodBlogs}
+        items={food}
       />
     </div>
   );

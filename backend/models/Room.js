@@ -8,6 +8,8 @@ const datePricingSchema = new mongoose.Schema({
 
 const roomSchema = new mongoose.Schema({
   roomType: { type: String, required: true },
+  shortDescription: { type: String, default: '' },
+  size: { type: String, default: '' },
   totalRooms: { type: Number, required: true },
   bookedRooms: { type: Number, default: 0 },
   pricePerNight: { type: Number, required: true },

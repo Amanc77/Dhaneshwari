@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import api from "../api/axios";
 
 function Testimonials() {
-  const reviews = [
+  const fallbackReviews = [
     {
       id: 1,
       title: "Exceptional Stay & Service",
@@ -41,7 +42,29 @@ function Testimonials() {
     },
   ];
 
+  const [reviews, setReviews] = useState(fallbackReviews);
   const [index, setIndex] = useState(0);
+  useEffect(() => {
+    api
+      .get("/testimonials")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const mapped = data.map((item) => ({
+          id: item._id,
+          title: item.title || "Guest Review",
+          text: item.review,
+          author: item.name,
+          meta: `${item.tripType || "Holiday"}${item.daysStayed ? ` • ${item.daysStayed} Nights` : ""}`,
+          rating: item.rating || 5,
+          date: item.month && item.year ? `${item.month} ${item.year}` : "",
+        }));
+        setReviews(mapped);
+      })
+      .catch(() => {
+        // Keep fallback reviews on API failure
+      });
+  }, []);
+
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [itemsPerView, setItemsPerView] = useState(3);
 

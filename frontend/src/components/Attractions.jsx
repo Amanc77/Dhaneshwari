@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
+import api from "../api/axios";
 
 import image1 from "../assets/Dhaneshwari Photoshoot/Kashi-Vishwanath.webp";
 import image2 from "../assets/Dhaneshwari Photoshoot/kalBharavTemple.webp";
@@ -101,7 +102,32 @@ const attractions = [
 ];
 
 function Attractions() {
+  const [attractionsData, setAttractionsData] = useState(attractions);
   const [itemsPerView, setItemsPerView] = useState(3);
+  useEffect(() => {
+    const fallbackImages = [image2, image4, image6, image5, image1, image1, image3, image1];
+    api
+      .get("/attractions")
+      .then(({ data }) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const mapped = data.map((item, idx) => ({
+          id: item._id || idx + 1,
+          title: item.name,
+          desc: item.description,
+          distance: item.distance,
+          img: item.image || fallbackImages[idx % fallbackImages.length],
+          seo: {
+            alt: `${item.name} Varanasi`,
+            filename: item.name?.toLowerCase().replace(/\s+/g, "-"),
+          },
+        }));
+        setAttractionsData(mapped);
+      })
+      .catch(() => {
+        // Keep fallback attractions on API failure
+      });
+  }, []);
+
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -114,8 +140,8 @@ function Attractions() {
     "@type": "ItemList",
     "name": "Famous Attractions Near Our Hotel in Varanasi",
     "description": "Explore the top tourist attractions and sacred sites near our hotel in Varanasi, including temples, ghats, and cultural landmarks.",
-    "numberOfItems": attractions.length,
-    "itemListElement": attractions.map((attraction, index) => ({
+    "numberOfItems": attractionsData.length,
+    "itemListElement": attractionsData.map((attraction, index) => ({
       "@type": "ListItem",
       "position": index + 1,
       "item": {
@@ -149,7 +175,7 @@ function Attractions() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const totalSlides = attractions.length;
+  const totalSlides = attractionsData.length;
   const startIndex = itemsPerView;
   const [slideIndex, setSlideIndex] = useState(startIndex);
 
@@ -158,9 +184,9 @@ function Attractions() {
   }, [itemsPerView]);
 
   const extendedAttractions = [
-    ...attractions.slice(-itemsPerView),
-    ...attractions,
-    ...attractions.slice(0, itemsPerView),
+    ...attractionsData.slice(-itemsPerView),
+    ...attractionsData,
+    ...attractionsData.slice(0, itemsPerView),
   ];
 
   const handleTransitionEnd = () => {
@@ -402,7 +428,7 @@ function Attractions() {
               </div>
             </div>
 
-            {attractions.length > itemsPerView && (
+            {attractionsData.length > itemsPerView && (
               <>
                 <button
                   onClick={prevSlide}
@@ -423,7 +449,7 @@ function Attractions() {
             )}
           </div>
 
-          {attractions.length > itemsPerView && (
+          {attractionsData.length > itemsPerView && (
             <div className="mt-8 flex justify-center space-x-3" role="tablist" aria-label="Attractions carousel navigation">
               {Array.from({ length: totalSlides }).map((_, i) => {
                 const isActive =

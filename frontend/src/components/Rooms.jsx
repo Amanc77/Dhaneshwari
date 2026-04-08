@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import api from "../api/axios";
 import room1 from "../assets/Dhaneshwari Photoshoot/roomewithBlancket.jpeg";
 import room2 from "../assets/Dhaneshwari Photoshoot/roomwithBalloon.jpg";
 import room3 from "../assets/Dhaneshwari Photoshoot/astheticRoom.jpeg";
 import { buildQuickPaymentState } from "../utils/quickPaymentState";
 import { getImageAlt, getSeoFileName } from "../utils/imageSeo";
 
-const rooms = [
+const fallbackRooms = [
   {
     title: "Deluxe Room",
     desc: "Elegant interiors with modern comfort. Perfect for business travelers and couples seeking a luxurious stay.",
@@ -39,6 +40,35 @@ const rooms = [
 
 function Rooms() {
   const navigate = useNavigate();
+  const [rooms, setRooms] = useState(fallbackRooms);
+
+  useEffect(() => {
+    let mounted = true;
+    const fallbackImages = [room1, room2, room3];
+    api
+      .get("/rooms")
+      .then(({ data }) => {
+        if (!mounted || !Array.isArray(data) || data.length === 0) return;
+        const mapped = data.map((room, idx) => ({
+          id: room._id,
+          title: room.roomType,
+          desc: room.shortDescription || "Elegant interiors with modern comfort.",
+          img: room.images?.[0] || fallbackImages[idx % fallbackImages.length],
+          price: room.pricePerNight,
+          amenities: room.amenities || [],
+          size: room.size || "Spacious",
+          occupancy: `${room.maxOccupancy || room.baseOccupancy || 2} Adults`,
+        }));
+        setRooms(mapped);
+      })
+      .catch(() => {
+        // Keep fallback UI data if API fails
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -103,7 +133,7 @@ function Rooms() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 pt-4 lg:gap-8 px-2 sm:px-2 lg:px-2">
             {rooms.map((room, i) => (
               <div
-                key={i}
+                key={room.id || i}
                 className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group"
               >
                 <div className="relative overflow-hidden">
