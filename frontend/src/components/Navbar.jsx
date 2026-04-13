@@ -59,6 +59,14 @@ function Navbar() {
         <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0">
           {isAuthenticated ? (
             <>
+              {String(user?.role || "").toLowerCase() === "admin" && (
+                <Link
+                  to="/admin/dashboard"
+                  className="text-xs xl:text-sm font-semibold text-orange-600 hover:text-orange-700 whitespace-nowrap"
+                >
+                  Admin panel
+                </Link>
+              )}
               <span className="text-xs xl:text-sm font-semibold text-gray-600 whitespace-nowrap">
                 {user?.name || "User"}
               </span>
@@ -130,16 +138,27 @@ function Navbar() {
           ))}
           <li className="border-t border-gray-100 pt-2 mt-1">
             {isAuthenticated ? (
-              <button
-                type="button"
-                className="block w-full text-left py-3 px-3 rounded-md text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                onClick={() => {
-                  signOut();
-                  setMenuOpen(false);
-                }}
-              >
-                Sign out
-              </button>
+              <div className="flex flex-col gap-1">
+                {String(user?.role || "").toLowerCase() === "admin" && (
+                  <Link
+                    to="/admin/dashboard"
+                    className="block py-3 px-3 rounded-md text-sm font-semibold text-orange-600 hover:bg-gray-50"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Admin panel
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  className="block w-full text-left py-3 px-3 rounded-md text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  onClick={() => {
+                    signOut();
+                    setMenuOpen(false);
+                  }}
+                >
+                  Sign out
+                </button>
+              </div>
             ) : (
               <div className="flex flex-col gap-1">
                 <NavLink

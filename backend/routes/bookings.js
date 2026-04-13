@@ -134,34 +134,57 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// ─── Update booking status — admin ───────────────────────────────────────────
+// ─── Update booking — admin (status, guest fields, amount) ─────────────────────
 router.put('/:id',
   auth,
-  [body('status').isIn(['pending', 'confirmed', 'cancelled']).withMessage('Invalid status value')],
+  [
+    body('status').optional().isIn(['pending', 'confirmed', 'cancelled']).withMessage('Invalid status value'),
+    body('guestName').optional({ checkFalsy: true }).trim().notEmpty(),
+    body('guestEmail').optional({ checkFalsy: true }).isEmail(),
+    body('guestPhone').optional({ checkFalsy: true }),
+    body('totalAmount').optional({ checkFalsy: true }).isNumeric(),
+  ],
   validate,
   async (req, res) => {
     try {
-      const { status } = req.body;
+      const { status, guestName, guestEmail, guestPhone, totalAmount } = req.body;
+      if (
+        status === undefined &&
+        guestName === undefined &&
+        guestEmail === undefined &&
+        guestPhone === undefined &&
+        totalAmount === undefined
+      ) {
+        return res.status(400).json({ error: 'No fields to update' });
+      }
+
       const booking = await Booking.findById(req.params.id).populate('room');
       if (!booking) return res.status(404).json({ error: 'Booking not found' });
 
       const prevStatus = booking.status;
-      booking.status = status;
+      if (guestName !== undefined) booking.guestName = guestName;
+      if (guestEmail !== undefined) booking.guestEmail = guestEmail;
+      if (guestPhone !== undefined) booking.guestPhone = guestPhone;
+      if (totalAmount !== undefined) booking.totalAmount = Number(totalAmount);
+      if (status !== undefined) booking.status = status;
+
       await booking.save();
 
       const room = await Room.findById(booking.room._id || booking.room);
-
-      if (status === 'cancelled' && prevStatus !== 'cancelled' && room) {
-        room.bookedRooms = Math.max(0, room.bookedRooms - 1);
-        await room.save();
+      if (room && status !== undefined) {
+        const newStatus = booking.status;
+        if (newStatus === 'cancelled' && prevStatus !== 'cancelled') {
+          room.bookedRooms = Math.max(0, room.bookedRooms - 1);
+          await room.save();
+        }
+        if (prevStatus === 'cancelled' && newStatus !== 'cancelled') {
+          room.bookedRooms += 1;
+          await room.save();
+        }
       }
 
-      if (prevStatus === 'cancelled' && status !== 'cancelled' && room) {
-        room.bookedRooms += 1;
-        await room.save();
-      }
-
-      res.json(booking);
+      const updated = await Booking.findById(booking._id).populate('room');
+      res.json(updated);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }

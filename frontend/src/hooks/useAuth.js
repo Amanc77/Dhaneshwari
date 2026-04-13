@@ -27,28 +27,52 @@ export function useAuth() {
     return { ok: true };
   };
 
+  const applyLoginResponse = (data, fallbackEmail) => {
+    const apiUser = data?.user || {};
+    const role = String(apiUser.role || "user").toLowerCase();
+    const session = {
+      id: apiUser.id || apiUser._id,
+      name: apiUser.name || (role === "admin" ? "Admin" : ""),
+      email: apiUser.email || fallbackEmail,
+      phone: apiUser.phone || "",
+      role,
+    };
+    localStorage.setItem(STORAGE_SESSION, JSON.stringify(session));
+    if (data?.token) {
+      localStorage.setItem(STORAGE_TOKEN, data.token);
+    }
+    dispatch(setSession(session));
+    return { ok: true, user: session };
+  };
+
   const signIn = async (email, password) => {
+    const normalizedEmail = email.trim().toLowerCase();
     try {
       const { data } = await api.post("/auth/login", {
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
       });
-      const apiUser = data?.user || {};
-      const session = {
-        id: apiUser.id || apiUser._id,
-        name: apiUser.name || "",
-        email: apiUser.email || email.trim().toLowerCase(),
-        phone: apiUser.phone || "",
-        role: apiUser.role || "user",
-      };
-
-      localStorage.setItem(STORAGE_SESSION, JSON.stringify(session));
-      if (data?.token) {
-        localStorage.setItem(STORAGE_TOKEN, data.token);
-      }
-      dispatch(setSession(session));
-      return { ok: true, user: session };
+      return applyLoginResponse(data, normalizedEmail);
     } catch (error) {
+      const status = error?.response?.status;
+      const errMsg = String(error?.response?.data?.error || "");
+      if (
+        status === 404 &&
+        errMsg.toLowerCase().includes("not found")
+      ) {
+        try {
+          const { data } = await api.post("/admin/login", {
+            email: normalizedEmail,
+            password,
+          });
+          return applyLoginResponse(data, normalizedEmail);
+        } catch (adminErr) {
+          const message =
+            adminErr?.response?.data?.error ||
+            "Unable to sign in. Please try again.";
+          return { ok: false, error: message };
+        }
+      }
       const message =
         error?.response?.data?.error || "Unable to sign in. Please try again.";
       return { ok: false, error: message };
@@ -99,7 +123,8 @@ export function useAuth() {
   const hasRole = (roles) => {
     if (!user?.role) return false;
     if (!roles || roles.length === 0) return true;
-    return roles.includes(user.role);
+    const r = String(user.role).toLowerCase();
+    return roles.some((x) => String(x).toLowerCase() === r);
   };
 
   return {

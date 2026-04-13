@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import {
   LayoutDashboard,
   Users,
@@ -11,9 +12,11 @@ import {
 
 const AdminSidebar = ({ isOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   const menuItems = [
-    { path: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
+    { path: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard", exact: true },
     { path: "/admin/users", icon: Users, label: "Users" },
     { path: "/admin/bookings", icon: Calendar, label: "Bookings" },
     { path: "/admin/rooms", icon: DoorOpen, label: "Rooms" },
@@ -67,6 +70,11 @@ const AdminSidebar = ({ isOpen }) => {
       {/* Footer */}
       <div className="p-4 border-t border-gray-700">
         <button
+          type="button"
+          onClick={() => {
+            signOut();
+            navigate("/", { replace: true });
+          }}
           className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
           title="Logout"
         >

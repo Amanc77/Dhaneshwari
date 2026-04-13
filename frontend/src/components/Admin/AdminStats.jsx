@@ -17,29 +17,60 @@ const StatCard = ({ icon: Icon, title, value, color }) => {
   );
 };
 
-const AdminStats = () => {
+function formatNum(n) {
+  if (n == null || Number.isNaN(n)) return "—";
+  return Number(n).toLocaleString();
+}
+
+const AdminStats = ({
+  totalUsers,
+  activeBookings,
+  totalRooms,
+  totalRevenue,
+  loading,
+  error,
+}) => {
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="bg-white rounded-lg p-6 shadow-md animate-pulse h-28 bg-gray-200"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+    );
+  }
+
   const stats = [
     {
       title: "Total Users",
-      value: "1,234",
+      value: formatNum(totalUsers),
       icon: Users,
       color: "bg-blue-500",
     },
     {
-      title: "Active Bookings",
-      value: "56",
+      title: "Bookings (all)",
+      value: formatNum(activeBookings),
       icon: Calendar,
       color: "bg-green-500",
     },
     {
-      title: "Total Rooms",
-      value: "24",
+      title: "Room types",
+      value: formatNum(totalRooms),
       icon: DoorOpen,
       color: "bg-purple-500",
     },
     {
-      title: "Revenue",
-      value: "$12,450",
+      title: "Revenue (confirmed)",
+      value: `₹${formatNum(totalRevenue)}`,
       icon: TrendingUp,
       color: "bg-orange-500",
     },

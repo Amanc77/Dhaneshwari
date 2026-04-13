@@ -24,7 +24,7 @@ function SignIn() {
       setLoading(false);
       return;
     }
-    const role = result.user?.role || "user";
+    const role = String(result.user?.role || "user").toLowerCase();
     const nextPath = role === "admin" ? "/admin/dashboard" : from;
     navigate(nextPath, { replace: true });
   };

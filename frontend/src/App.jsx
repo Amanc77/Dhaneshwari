@@ -19,10 +19,31 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLayout from "./components/Admin/AdminLayout";
+import AdminDashboard from "./components/Admin/AdminDashboard";
+import AdminUsers from "./components/Admin/AdminUsers";
+import AdminBookings from "./components/Admin/AdminBookings";
+import AdminRooms from "./components/Admin/AdminRooms";
+import AdminTestimonials from "./components/Admin/AdminTestimonials";
 
 function App() {
   return (
     <Routes>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute roles={["admin"]}>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="bookings" element={<AdminBookings />} />
+        <Route path="rooms" element={<AdminRooms />} />
+        <Route path="testimonials" element={<AdminTestimonials />} />
+      </Route>
       <Route element={<SiteLayout />}>
         <Route index element={<Home />} />
         <Route path="home" element={<Navigate to="/" replace />} />
