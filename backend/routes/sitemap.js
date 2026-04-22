@@ -27,7 +27,9 @@ router.get('/', async (req, res) => {
 
     const allLinks = [...staticLinks, ...blogLinks];
 
-    const stream = new SitemapStream({ hostname: 'https://dhaneshwari.com' });
+    const stream = new SitemapStream({
+      hostname: process.env.SITE_URL || process.env.FRONTEND_URL || 'http://localhost:5173',
+    });
     const data = await streamToPromise(Readable.from(allLinks).pipe(stream));
 
     res.header('Content-Type', 'application/xml');
