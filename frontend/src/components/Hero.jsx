@@ -88,7 +88,7 @@ function Hero() {
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           loading="eager"
-          fetchpriority="high"
+          fetchPriority="high"
           decoding="async"
           onLoad={() => setImageLoaded(true)}
         />
