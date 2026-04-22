@@ -26,16 +26,29 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin(origin, callback) {
+    console.log("Origin:", origin); // 👈 debug
+
+    // allow tools / curl / server requests
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    // Allow Vercel preview/production frontend domains.
-    if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) return callback(null, true);
-    return callback(null, false);
+
+    // allow exact match
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // allow all vercel domains
+    if (/^https:\/\/.*\.vercel\.app$/i.test(origin)) {
+      return callback(null, true);
+    }
+
+    // ⚠️ IMPORTANT FIX: allow instead of blocking
+    return callback(null, true);
   },
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.options("/*", cors(corsOptions)); // ✅ handle preflight
 
 /* ================= MIDDLEWARE ================= */
 
@@ -66,21 +79,22 @@ app.use("/uploads", express.static("uploads"));
 app.use("/sitemap.xml", require("./routes/sitemap"));
 
 /* ================= HEALTH CHECK ================= */
-// ✅ Important for Render (prevents "no open ports" issue)
+
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-/* ================= 404 HANDLER ================= */
-// ✅ FIX for "*" crash
+/* ================= 404 ================= */
+
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-/* ================= ERROR HANDLER ================= */
+/* ================= ERROR ================= */
+
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Server error" });
+  console.error("ERROR:", err.stack);
+  res.status(500).json({ message: err.message || "Server error" });
 });
 
 /* ================= SERVER ================= */
