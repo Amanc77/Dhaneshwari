@@ -8,24 +8,35 @@ connectDB();
 
 const app = express();
 
+const defaultAllowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://dhaneshwari-alpha.vercel.app",
+];
+
 const allowedOrigins = [
+  ...defaultAllowedOrigins,
   process.env.FRONTEND_URL,
   ...(process.env.FRONTEND_URLS || "").split(","),
 ]
   .map((origin) => origin && origin.trim())
   .filter(Boolean);
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      // Allow requests without Origin header (curl, server-to-server, health checks).
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  }),
-);
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow requests without Origin header (curl, server-to-server, health checks).
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Do not throw 500 for unknown origins; simply deny CORS.
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 
 // Existing routes
