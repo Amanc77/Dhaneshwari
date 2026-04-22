@@ -28,6 +28,8 @@ const corsOptions = {
   origin(origin, callback) {
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow Vercel preview/production frontend domains.
+    if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) return callback(null, true);
     return callback(null, false);
   },
   credentials: true,
