@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: dhaneshwari-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: FRONTEND_URL
+        value: https://dhaneshwari-alpha.vercel.app
+      - key: FRONTEND_URLS
+        value: https://dhaneshwari-alpha.vercel.app,http://localhost:5173
+      - key: SITE_URL
+        value: https://dhaneshwari-alpha.vercel.app
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
