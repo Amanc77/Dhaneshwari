@@ -10,17 +10,36 @@ const app = express();
 
 /* ================= CORS SETUP ================= */
 
-// Simple and reliable CORS (no crash, no blocking)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://dhaneshwari-alpha.vercel.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: true, // allow all origins (safe for now)
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      console.warn("CORS blocked for origin:", origin);
+      return callback(new Error("CORS not allowed for: " + origin));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   }),
 );
+
+// ✅ Fix for Express 5 / new path-to-regexp
+app.options(/.*/, cors());
 
 /* ================= MIDDLEWARE ================= */
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /* ================= ROUTES ================= */
 
@@ -49,7 +68,11 @@ app.use("/sitemap.xml", require("./routes/sitemap"));
 /* ================= HEALTH CHECK ================= */
 
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.json({
+    status: "ok",
+    message: "API is running...",
+    allowedOrigins,
+  });
 });
 
 /* ================= 404 ================= */
@@ -70,5 +93,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
+  console.log(` Allowed origins:`, allowedOrigins);
 });
