@@ -10,45 +10,13 @@ const app = express();
 
 /* ================= CORS SETUP ================= */
 
-const defaultAllowedOrigins = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "https://dhaneshwari-alpha.vercel.app",
-];
-
-const allowedOrigins = [
-  ...defaultAllowedOrigins,
-  process.env.FRONTEND_URL,
-  ...(process.env.FRONTEND_URLS || "").split(","),
-]
-  .map((origin) => origin && origin.trim())
-  .filter(Boolean);
-
-const corsOptions = {
-  origin(origin, callback) {
-    console.log("Origin:", origin); // 👈 debug
-
-    // allow tools / curl / server requests
-    if (!origin) return callback(null, true);
-
-    // allow exact match
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    // allow all vercel domains
-    if (/^https:\/\/.*\.vercel\.app$/i.test(origin)) {
-      return callback(null, true);
-    }
-
-    // ⚠️ IMPORTANT FIX: allow instead of blocking
-    return callback(null, true);
-  },
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.options("/*", cors(corsOptions)); // ✅ handle preflight
+// Simple and reliable CORS (no crash, no blocking)
+app.use(
+  cors({
+    origin: true, // allow all origins (safe for now)
+    credentials: true,
+  }),
+);
 
 /* ================= MIDDLEWARE ================= */
 
